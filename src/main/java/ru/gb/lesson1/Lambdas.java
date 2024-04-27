@@ -48,8 +48,10 @@ public class Lambdas {
     User name = userCreator.apply("name");
 
     Supplier<User> unnamedUserGenerator = User::new; // () -> User
-    BiFunction<String, Integer, User> a = User::new;
 
+    BiFunction<String, Integer, User> a = User::new;
+    String nameA = name.name;
+    System.out.println(nameA);
   }
 
   private static class User {
@@ -65,6 +67,12 @@ public class Lambdas {
 
     public User(String name, int age) {
 
+    }
+
+    @Override
+    public String toString() {
+      return  "User " +
+              name;
     }
   }
 

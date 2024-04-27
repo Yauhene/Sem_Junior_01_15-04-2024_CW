@@ -45,7 +45,7 @@ public class StreamDemo {
   static void printPersons(List<Person> persons) {
     persons.stream()
       .filter(it1 -> it1.getAge() > 40)
-      .map(it1 -> it1.getName()) // Person -> String
+      .map(it1 -> it1.getName() + " - " + it1.getAge() + " years") // Person -> String
       .forEach(it -> System.out.println(it));
   }
 
