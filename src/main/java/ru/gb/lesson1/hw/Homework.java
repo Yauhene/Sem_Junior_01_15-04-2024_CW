@@ -1,6 +1,5 @@
 package ru.gb.lesson1.hw;
 
-import ru.gb.lesson1.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -22,20 +21,17 @@ public class Homework {
     persons.stream().forEach(it -> System.out.println(it));
 
     // Проверка Department.countPersons()
-
     System.out.println("=".repeat(100));
     System.out.println("Persons, age > 50, salary > 40 000: " +
             Department.countPersons(persons, 50, 40_000) +
             " persons");
 
     // Проверка Department.averageSalary()
-
     System.out.println("=".repeat(50) + " averageSalary(persons)");
     System.out.println("Department # " + 2 + ", average salary is: " +
             Department.averageSalary(persons,2).getAsDouble());
 
     // Проверка groupByDepartment(persons)
-
     System.out.println("=".repeat(50) + " groupByDepartment(persons)");
     Map<Department, List<Person>> mapGroup = Department.groupByDepartment(persons);
     for (Map.Entry item: mapGroup.entrySet()) {
@@ -47,13 +43,19 @@ public class Homework {
     }
 
     // Проверка maxSalaryByDepartment(persons)
-
     System.out.println("=".repeat(50) + " maxSalaryByDepartment(persons)");
     Map<Department, Double> maxSalary = Department.maxSalaryByDepartment(persons);
-
     for (Map.Entry item: maxSalary.entrySet()) {
       System.out.println(((Department) item.getKey()).getName() + ": " + item.getValue());
     }
+
+    // Проверка groupPersonNamesByDepartment(persons)
+    System.out.println("=".repeat(50) + " groupPersonNamesByDepartment(persons)");
+    System.out.println(Department.groupPersonNamesByDepartment(persons));
+
+    // Проверка minSalaryPersons( persons)
+    System.out.println("=".repeat(50) + " minSalaryPersons( persons)");
+    System.out.println(Department.minSalaryPersons( persons));
   }
 
   /**
@@ -149,7 +151,6 @@ public class Homework {
      * Найти количество сотрудников, старше x лет с зарплатой больше, чем d
      */
     static int countPersons(List<Person> persons, int x, double d) {
-      // TODO: Реализовать метод
 
       return ((int) persons.stream()
               .filter(it -> it.getAge() > x)
@@ -162,14 +163,10 @@ public class Homework {
      * Найти среднюю зарплату сотрудников, которые работают в департаменте X
      */
     static OptionalDouble averageSalary(List<Person> persons, int x) {
-      // TODO: Реализовать метод
-      String xStr = String.valueOf(x);
-      OptionalDouble average;
-       average =  persons.stream()
-              .filter(it -> it.getDepartment().getName().contains(xStr))
+      return persons.stream()
+              .filter(it -> it.getDepartment().getName().contains(String.valueOf(x)))
               .mapToDouble(Person::getSalary)
               .average();
-      return average;
 
 //      throw new UnsupportedOperationException();
     }
@@ -178,7 +175,6 @@ public class Homework {
      * Сгруппировать сотрудников по департаментам
      */
     static Map<Department, List<Person>> groupByDepartment(List<Person> persons) {
-      // TODO: Реализовать метод
       return persons.stream()
               .collect(Collectors.groupingBy(Person::getDepartment));
 //      throw new UnsupportedOperationException();
@@ -189,7 +185,6 @@ public class Homework {
      * Найти максимальные зарплаты по отделам
      */
     static Map<Department, Double> maxSalaryByDepartment(List<Person> persons) {
-      // TODO: Реализовать метод
       return persons.stream()
               .collect(Collectors.toMap(Person::getDepartment, Person::getSalary, new BinaryOperator<Double>() {
                 @Override
@@ -210,22 +205,35 @@ public class Homework {
      * ** Сгруппировать имена сотрудников по департаментам
      */
     static Map<Department, List<String>> groupPersonNamesByDepartment(List<Person> persons) {
-      // TODO: Реализовать метод
-      throw new UnsupportedOperationException();
+      return persons.stream()
+              .collect(Collectors.groupingBy(Person::getDepartment,
+                      Collectors.mapping(Person::getName, Collectors.toList())));
+
+//      throw new UnsupportedOperationException();
     }
 
     /**
      * ** Найти сотрудников с минимальными зарплатами в своем отделе
      */
     static List<Person> minSalaryPersons(List<Person> persons) {
-      // TODO: Реализовать метод
       // В каждом департаменте ищем сотрудника с минимальной зарплатой.
       // Всех таких сотрудников собираем в список и возвращаем из метода.
-      throw new UnsupportedOperationException();
+
+      return persons.stream()
+              .collect(Collectors.groupingBy(Person::getDepartment,
+                      Collectors.minBy(Comparator.comparingDouble(Person::getSalary))))
+              .values()
+              .stream()
+              .flatMap(Optional::stream)
+              .collect(Collectors.toList());
+//      throw new UnsupportedOperationException();
     }
 
   }
 
+  /**
+   *  Метод, формирующий данные (коллекции departments и persons) для проверки работы новых методов
+   */
   static void dataGenerator() {
 //    List<Department> departments = new ArrayList<>();
 //    List<Person> persons = new ArrayList<>();
